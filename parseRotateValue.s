@@ -1,6 +1,6 @@
 
 /*
- * Filename:    checkRange.s
+ * Filename:    parseRotateValue.s
  * Author:      Liu Tan
  * Userid:      cs30xma
  * Description: SPARC assembly routine to to convert a string to a unsigned
@@ -10,11 +10,12 @@
  */
 
 
-.global parseRotateValue.s 
-.section ".text"   
+	.global parseRotateValue
+	.section ".text"   
 
-BASE=10;
+BASE=10
 ENDPTR_OFFSET=4
+TRUE=0
 
 /*
  * Function name: parseRotateValue 
@@ -38,28 +39,9 @@ ENDPTR_OFFSET=4
  *      %i1 - arg2 -- 
  *      %i2 - arg3 -- 
  *      %i0 - result.
+ *      %l3 - temp
  */
 
-/*
-int parserotateValue( char *str, unsigned long *rotateValue ) {
-
-  char *pEnd;
-  errno = 0;
-  *rotateValue = strtol( str, &pEnd, DEF_BASE );
-  if ( (errno != 0 ) {
-      char err_buffer[ERR_BUFFER_SIZE];
-      snprintf(err_buffer,ERR_BUFFER_SIZE,STR_ERR_CONVERTING,str,DEF_BASE);
-      perror(err_buffer);
-      errno = 0;
-      return ERANGE_ERR;
-  } else if (*pEnd != NULL) {
-    fprintf ( stderr, STR_ERR_NOTINT, str);
-    return ENDPTR_ERR;
-  }
-
-  return EXIT_SUCCESS;
-
-*/
 
 parseRotateValue:
 	save %sp, -(92 + ENDPTR_OFFSET) & -8, %sp 
@@ -71,11 +53,12 @@ parseRotateValue:
 
 	mov %i0, %o0       ! pass str to strtol arg1
 	add %fp, -ENDPTR_OFFSET, %o1 ! pass &endPtr to strtol arg2
-	mov BASE %o2       ! pass BASE(10) to strtol arg3
+	mov BASE, %o2      ! pass BASE(10) to strtol arg3
 	call strtol        
 	nop
 
-	st %o0, [%i1]      ! store the return of strtol to *rotateValue
+	mov %o0, %l3       ! save return value of strtol to temp
+
 
 checkErrno:
 	set errno, %l0     ! load address of errno
@@ -92,24 +75,47 @@ checkEndptr:
 	nop
 
 checkRange:
-	
 
+lower_bound: 
+	set MIN_ROTATE_G, %l0
+	ld [%l0], %l0       ! get actual value in MIN_ROTATE_G(-63)
+
+	cmp %l3 , %l0       ! compare temp and -63
+	bl boundError       ! if (temp < -63)
+	nop
+	
+upper_bound:
+	set MAX_ROTATE_G, %l0
+	ld [%l0], %l0       ! get actual value in MIN_ROTATE_G(-63)
+
+	cmp %l3 , %l0       ! compare temp and 63
+	bg boundError       ! if (temp > 63)
+	nop
+	
 Exit_Norm:
-        mov  0, %i0  ! return 0 if parse successfully
+	st %l3, [%i1]      ! store the tested value from temp to *rotateValue
+	mov TRUE, %i0      ! return 0 if parse successfully
 	ret          ! return from subroutine
 	restore      ! Restore caller's window; in "ret" delay slot
 
 errnoError:
 	set ERANGE_ERR_G, %l0
-	ld  [%l0], %li       ! save value in ENDPTR_ERRA(1) as return value
+	ld  [%l0], %i0       ! save value in ERANGE_ERR(2) as return value
 	ret
 	restore
 
 endptrError:
 	set ENDPTR_ERR_G, %l0
-	ld  [%l0], %li       ! save value in ENDPTR_ERRA(1) as return value
+	ld  [%l0], %i0       ! save value in ENDPTR_ERR(1) as return value
 	ret
 	restore
+
+boundError:
+	set BOUND_ERR_G, %l0
+	ld  [%l0], %i0       ! save value in BOUND_ERR_G(3) as return value
+	ret
+	restore
+
 
 
 

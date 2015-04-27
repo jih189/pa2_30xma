@@ -15,6 +15,9 @@
 #define MIN_ROTATE -63
 #define MAX_ROTATE +63
 
+#define MIN_ROTATE_STR "-63"
+#define MAX_ROTATE_STR "+63"
+
 // buffer size for err_buffer
 #define ERR_BUFFER_SIZE 100
 
