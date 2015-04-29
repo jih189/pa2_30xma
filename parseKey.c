@@ -47,7 +47,8 @@ int parseKey( char *str, unsigned long *key ) {
       perror(err_buffer);
       errno = 0;
       return ERANGE_ERR;
-  } else if (*pEnd != NULL) {
+  } else if (*pEnd != NULL || *str == '\0') {
+    // string contains special chars or string is empty
     fprintf ( stderr, STR_ERR_NOTINT, str);
     return ENDPTR_ERR;
   }

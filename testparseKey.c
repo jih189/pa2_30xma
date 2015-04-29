@@ -2,15 +2,14 @@
 /*
  * Unit Test for parseKey
  *
- * void rotate( unsigned int mask[], int rotateCnt );
+ * int parseKey( char *str, unsigned long *key )
  *
- * Takes mask[0] as high order 32 bits and mask[1] as low order 32 bits
- * and simulates a 64-bit rotate within these two words.
+ * This function convert a string to a unsigned long.
  *
- * Lower 6 bits of rotateCnt is masked to keep rotate range 0-63.
- *
- * Positive rotateCnt - rotate left
- * Negative rotateCnt - rotate right
+ * Return Value: 
+ *        0 -- if the string is parsed successfully.
+ *        ENDPTR_ERR(1) -- if string contains characters
+ *        ERANGE_ERR(2) -- if string is out of bound
  */
 
 #include "test.h"       /* For TEST() macro and stdio.h */
@@ -19,28 +18,84 @@
 #include <limits.h>     /* For LONG_MIN and LONG_MAX */
 #include "pa2.h"    /* For rotate() function prototype */
 
+void
+testparseKey()
+{
+
+    char *testString;
+    unsigned long testInt; 
+    int returnValue; 
+
+//  Test string with character
+//  --------------------------------------------------
+
+    testString = "99abc";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+    TEST( returnValue == ENDPTR_ERR );
+
+    
+//  Test string out of range.
+//  --------------------------------------------------
+
+    testString = "999999999999999999";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+    TEST( returnValue == ERANGE_ERR );
+
+
+//  Test empty string
+//  --------------------------------------------------
+    testString = "\0";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+    TEST( returnValue == ENDPTR_ERR);
+//     printf("return value is %d, testInt is %d",returnValue, testInt);
+
+
+//  Test normal case.
+//  --------------------------------------------------
+
+    testString = "123";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+    TEST( returnValue == EXIT_SUCCESS && testInt == 123 );
+
+
+//  Test normal case.
+//  --------------------------------------------------
+    testString = "0";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+    TEST( returnValue == EXIT_SUCCESS && testInt == 0 );
+
+
+//  Test normal case.
+//  --------------------------------------------------
+    testString = "25";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+    TEST( returnValue == EXIT_SUCCESS && testInt == 25 );
+
+
+//  Finish test
+//  --------------------------------------------------
+    printf( "Finished running tests on parseKey()\n" );
+
+}
+
 int
 main()
 {
 
-    char *testString1 = "99abc";
-    unsigned long testInt1; 
+    testparseKey();
 
-    int returnValue1 = parseKey(testString1, &testInt1 );
-
-//     if (!testInt1) printf( "nullptr\n" );
-//     else
-    printf("return value is %d,testInt is %d \n", returnValue1, testInt1);
-    
-    char *testString2 = "999999999999999999";
-    unsigned long testInt2; 
-
-    int returnValue2 = parseKey(testString2, &testInt2 );
-
-//     if (!testInt2) printf( "nullptr\n" );
-//     else
-    printf("return value is %d,testInt is %d \n", returnValue2, testInt2);
-   
     return 0;
 }
 
