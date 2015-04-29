@@ -64,9 +64,11 @@ testrotate()
     mask[0] = 0x7FFFFFFF;
     mask[1] = 0x7FFFFFFF;
 
+
     rotate ( mask, 1 );
     TEST( mask[0] == 0xFFFFFFFE );
     TEST( mask[1] == 0xFFFFFFFE );
+
 
     /* Test with bits to rotate being 1 */
     mask[0] = 0x80000000;
