@@ -9,6 +9,7 @@
  * Constants
  */
 #define EXPECTED_ARGS 5
+#define LONG_SIZE 4
 
 // argument ranges/values
 #define PASS_PHRASE_SIZE 8
