@@ -9,7 +9,6 @@
  * Sources of Help: None
  */
 
-
 	.global parseRotateValue
 	.section ".text"   
 
@@ -34,11 +33,10 @@ TRUE=0
  *      0 -- if the string is parsed successfully.
  *      ENDPTR_ERR(1) -- if endptr points to a non-null character.
  *      ERANGE_ERR(2) -- if errno is set to non-zero.
+ *      BOUND_ERR(3)  -- if string out of bound [-63, 63]
  * Registers Used:
- *      %i0 - arg1 -- 
- *      %i1 - arg2 -- 
- *      %i2 - arg3 -- 
- *      %i0 - result.
+ *      %i0 - arg1 -- char * to be converted
+ *      %i1 - arg2 -- rotateValue to store int value of char*
  *      %l3 - temp
  */
 
@@ -68,7 +66,7 @@ checkErrno:
 	nop
 
 checkEndptr:
-        ld   [%fp - ENDPTR_OFFSET], %l1 ! get the value of endPtr
+	ld [%fp - ENDPTR_OFFSET], %l1 ! get the value of endPtr
 	ldub [%l1], %l1                 ! dereference endptr to get the char
 	cmp  %l1, %g0       ! check if (*endptr!= '\0')
 	bne  endptrError

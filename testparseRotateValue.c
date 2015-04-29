@@ -1,16 +1,16 @@
 
 /*
- * Unit Test for rotate.s
+ * Unit Test for parseRotateValue.s
  *
- * void rotate( unsigned int mask[], int rotateCnt );
+ * int parseRotateValue( char *str, long *rotateValue  );
  *
- * Takes mask[0] as high order 32 bits and mask[1] as low order 32 bits
- * and simulates a 64-bit rotate within these two words.
+ * This module is responsible for parsing the rotation value.
  *
- * Lower 6 bits of rotateCnt is masked to keep rotate range 0-63.
- *
- * Positive rotateCnt - rotate left
- * Negative rotateCnt - rotate right
+ * Return value:
+ * 0 -- if the string is parsed successfully.
+ * ENDPTR_ERR(1) -- if contains characters.
+ * ERANGE_ERR(2) -- if string is out of the size of long
+ * BOUND_ERR(3)  -- if string out of bound [-63, 63]
  */
 
 #include "test.h"       /* For TEST() macro and stdio.h */
@@ -21,24 +21,25 @@
 void
 testparseRotateValue()
 {
+    char *testString;
+    long rotateValue; 
+    int errFlag;
 
     printf( "Testing parseRotateValue\n" );
 
     /*
-     * Test with rotateCnt of 0 - should be no change.
+     * Test with string contains characters
      */
 
-    char *testString = "99abc";
-    long rotateValue = 0; 
+    testString = "99abc";
+    rotateValue = 0; 
 
-    int errFlag = parseRotateValue(testString, &rotateValue );
-
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
+    errFlag = parseRotateValue(testString, &rotateValue );
 
     TEST( errFlag  == ENDPTR_ERR  );
     
     /*
-     *
+     * Test with string out of bound of long
      */
 
     testString = "999999999999999999";
@@ -46,11 +47,10 @@ testparseRotateValue()
 
     errFlag = parseRotateValue(testString, &rotateValue );
 
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
     TEST( errFlag  == ERANGE_ERR  );
 
     /*
-     *
+     * Test normal case
      */
 
     testString = "20";
@@ -58,11 +58,10 @@ testparseRotateValue()
 
     errFlag = parseRotateValue(testString, &rotateValue );
 
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
-    TEST( errFlag  == 0  );
+    TEST( errFlag  == EXIT_SUCCESS && rotateValue == 20 );
 
     /*
-     *
+     * Test string to be parsed out of upper setting bound [-63, 63]
      */
 
     testString = "70";
@@ -70,11 +69,10 @@ testparseRotateValue()
 
     errFlag = parseRotateValue(testString, &rotateValue );
 
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
-    TEST( errFlag  == BOUND_ERR  );
+    TEST( errFlag  == BOUND_ERR && rotateValue == 0 );
 
     /*
-     *
+     * Test string to be parsed out of lower setting bound [-63, 63]
      */
 
     testString = "-70";
@@ -82,11 +80,10 @@ testparseRotateValue()
 
     errFlag = parseRotateValue(testString, &rotateValue );
 
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
-    TEST( errFlag  == BOUND_ERR);
+    TEST( errFlag  == BOUND_ERR && rotateValue == 0);
 
     /*
-     *
+     * Test with MIN_ROTATE (-63)
      */
 
     testString = MIN_ROTATE_STR;
@@ -94,14 +91,11 @@ testparseRotateValue()
 
     errFlag = parseRotateValue(testString, &rotateValue );
 
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
-    TEST( errFlag  == 0 );
+    TEST( errFlag  == EXIT_SUCCESS && rotateValue == MIN_ROTATE);
 
-
-    printf( "Finished running tests on parseRotateValue()\n" );
 
     /*
-     *
+     * Test with MAX_ROTATE (63)
      */
 
     testString = MAX_ROTATE_STR;
@@ -109,8 +103,7 @@ testparseRotateValue()
 
     errFlag = parseRotateValue(testString, &rotateValue );
 
-    printf("return value is %d,testInt is %d \n", errFlag, rotateValue);
-    TEST( errFlag  == 0 );
+    TEST( errFlag  == EXIT_SUCCESS && rotateValue == MAX_ROTATE);
 
 
     printf( "Finished running tests on parseRotateValue()\n" );
