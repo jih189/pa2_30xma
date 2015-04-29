@@ -32,13 +32,9 @@ ARRAY_OFFSET=4
  *      arg2: rotateCnt -- the amount of times we are rotateing and the
  *            direction
  * Side Effects:
- *      It will set rotateValue
- * Error Conditions:
- *      Checks if argl1 is valid string of interger.
- * Return Value:
- *      0 -- if the string is parsed successfully.
- *      ENDPTR_ERR(1) -- if endptr points to a non-null character.
- *      ERANGE_ERR(2) -- if errno is set to non-zero.
+ *      It will update mask[0], mask[1] with shifted value.
+ * Error Conditions: none
+ * Return Value: none
  * Registers Used:
  *      %i0 - arg1 -- address of the first array element
  *      %i1 - arg2 -- rotateCnt
