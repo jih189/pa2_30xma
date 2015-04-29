@@ -68,6 +68,25 @@ testcreateMask()
           mask[1] == ( keys[1] ^ *((unsigned long*)(passphrase+LONG_SIZE)) )
         );
 
+    keys[0] = 0x00000000;
+    keys[1] = 0x00000000;
+
+    passphrase = "\00000000";
+
+    createMask( keys, passphrase, mask );
+    TEST( mask[0] == ( keys[0] ^ *((unsigned long*)passphrase) ) &&
+          mask[1] == ( keys[1] ^ *((unsigned long*)(passphrase+LONG_SIZE)) )
+        );
+
+    keys[0] = 0x8AB72332;
+    keys[1] = 0x292283E2;
+
+    passphrase = "00000000";
+
+    createMask( keys, passphrase, mask );
+    TEST( mask[0] == ( keys[0] ^ *((unsigned long*)passphrase) ) &&
+          mask[1] == ( keys[1] ^ *((unsigned long*)(passphrase+LONG_SIZE)) )
+        );
     printf( "Finished running tests on createMask()\n" );
 
 }
