@@ -4,6 +4,8 @@
 #include <stdlib.h>
 /* Library for fprint*/
 #include <stdio.h>
+/* Library for strlen*/
+#include <string.h>
 /* Library for errno */
 #include <errno.h>
 /* Library for LONG_MAX/MIN */
@@ -14,12 +16,15 @@
 #include"pa2_strings.h"
 
 
-int main( int argc, char *argv[] ) {
+int main() {
 
-    FILE* inFile;
-    int success = parseInput(argv[1], &inFile );
+    char *src = "abcdefgh";
+    char des[PASS_PHRASE_SIZE];
 
-    printf("%d\n", success);
+    int errorCheck = parsePassPhrase(src,des);
+
+    printf("%d\n", errorCheck);
+    printf("%s\n",des);
 
 
     return EXIT_SUCCESS;
