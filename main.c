@@ -64,6 +64,7 @@ int main( int argc, char *argv[] ) {
     int errCheck = 0;
     int errNum = 0;
     char passphrase[PASS_PHRASE_SIZE];
+    unsigned long mask[mask_num];
     unsigned long keys[keys_num];
     long rotateValue = 0;
     FILE* inFile = NULL;
@@ -137,7 +138,9 @@ int main( int argc, char *argv[] ) {
     return EXIT_FAILURE;
     }
 
-    mycrypt (FILE *inFile, unsigned long mask[], int rotateValue);
+    createMask(keys,passphrase,mask);
+
+    mycrypt (inFile, mask, rotateValue);
 
     fclose(inFile);
 

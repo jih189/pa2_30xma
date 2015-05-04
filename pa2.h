@@ -11,6 +11,7 @@
 #define EXPECTED_ARGS 5
 #define LONG_SIZE 4
 #define keys_num 2
+#define mask_num 2
 
 // argument ranges/values
 #define PASS_PHRASE_SIZE 8
