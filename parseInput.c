@@ -47,7 +47,6 @@
      FILE* tempFile = fopen(str, "r");
      // file does not opened successfully
      if (!tempFile) {
-       perror(str);
        return FILE_ERR;
 }
      else *inFile = tempFile;
