@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+/* Library for strcmp */
+#include <string.h>
 /* Library for errno */
 #include <errno.h>
 /* Library for LONG_MAX/MIN */
