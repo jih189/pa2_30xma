@@ -38,14 +38,11 @@ int parseKey( char *str, unsigned long *key ) {
   char *pEnd;
   errno = 0;
   *key = strtoul( str, &pEnd, DEF_BASE );
-  if (
-      errno == ERANGE && (*key == ULONG_MAX || *key == LONG_MIN)
-      || (errno != 0 && *key == -1)
-     ) {
+  if ( errno == ERANGE || (errno != 0 )) {
     errno = 0;
     return ERANGE_ERR;
-//   } else if (*pEnd != NULL || *str == '\0') {
-  } else if (*pEnd != NULL || *str == '\0') {
+  //} else if (*pEnd != NULL || *str == '\0') {
+  } else if (*pEnd != NULL) {
     // string contains special chars or string is empty
     return ENDPTR_ERR;
   }
