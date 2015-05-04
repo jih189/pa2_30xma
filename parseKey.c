@@ -41,15 +41,12 @@ int parseKey( char *str, unsigned long *key ) {
   if (
       errno == ERANGE && (*key == ULONG_MAX || *key == LONG_MIN)
       || (errno != 0 && *key == -1)
-      ) {
-      char err_buffer[ERR_BUFFER_SIZE];
-      snprintf(err_buffer,ERR_BUFFER_SIZE,STR_ERR_CONVERTING,str,DEF_BASE);
-      perror(err_buffer);
-      errno = 0;
-      return ERANGE_ERR;
+     ) {
+    errno = 0;
+    return ERANGE_ERR;
+//   } else if (*pEnd != NULL || *str == '\0') {
   } else if (*pEnd != NULL || *str == '\0') {
     // string contains special chars or string is empty
-    fprintf ( stderr, STR_ERR_NOTINT, str);
     return ENDPTR_ERR;
   }
 
