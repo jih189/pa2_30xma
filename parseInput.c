@@ -36,22 +36,21 @@
  *        FILE_ERR(4) -- if the file not opened successfully
  */
 
- int parseInput( char *str, FILE **inFile ){
+int parseInput( char *str, FILE **inFile ){
 
-   // strcmp return 0 if equal
-   int isStdin = ! (strcmp (str, "-"));
+  errno = 0;
+  // strcmp return 0 if equal
+  int isStdin = ! (strcmp (str, "-"));
 
-   if (isStdin) *inFile = stdin;
-   // open the file, check if opens successfully, set inFile to the return
-   // FILE ptr
-   else {
-     // open file with name str , in read mode
-     FILE* tempFile = fopen(str, FILE_OPEN_OPT);
-     // file does not opened successfully
-     if (!tempFile) {
-       return FILE_ERR;
-}
-     else *inFile = tempFile;
-   }
+  if (isStdin) *inFile = stdin;
+  // open the file, check if opens successfully, set inFile to the return
+  // FILE ptr
+  else {
+    // open file with name str , in read mode
+    *inFile = fopen(str, FILE_OPEN_OPT);
+    if (errno) {
+      return FILE_ERR;
+    }
+  }
   return EXIT_SUCCESS;
 }
