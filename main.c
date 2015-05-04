@@ -3,11 +3,11 @@
  * Filename:    main.c
  * Author:      Liu Tan
  * Userid:      cs30wma
- * Description: Example C program for pa1. It calls a couple of functions
+ * Description: Example C program for pa2. It calls a couple of functions
  *              written in assembly and C as examples of function calls and
  *              parameter passing in C and SPARC assembly (also known as
  *              the language's and architecture's calling conventions)
- * Date:        4/17/2015
+ * Date:        5/4/2015
  * Sources of Help: None 
  */
 
@@ -33,7 +33,9 @@
  *    This module is responsible for driving the program. It will properly
  *    parse all of the command line arguments, create the  mask, perform the
  *    encryption/decryption, and close the file.
- * Parameters:  
+ * Parameters: 
+ *    argc -- num of arguments
+ *    argv -- char* contains all command line arguments
  * Side Effects: none
  * Error Conditions: None.
  * Return value: 0 indicating successful execution.
@@ -64,7 +66,7 @@ int main( int argc, char *argv[] ) {
     char passphrase[PASS_PHRASE_SIZE];
     unsigned long keys[keys_num];
     long rotateValue = 0;
-    FILE* infile = NULL;
+    FILE* inFile = NULL;
 
     // ----------------------------------------------------------------------
     // parse passphrase
@@ -120,7 +122,7 @@ int main( int argc, char *argv[] ) {
 
     // parseInput
     // ----------------------------------------------------------------------
-    errCheck = parseInput(argv[FILE_INDEX], &infile);
+    errCheck = parseInput(argv[FILE_INDEX], &inFile);
     if (errCheck == FILE_ERR) { 
       char err_buffer[ERR_BUFFER_SIZE];
       snprintf(err_buffer,ERR_BUFFER_SIZE,
@@ -135,7 +137,9 @@ int main( int argc, char *argv[] ) {
     return EXIT_FAILURE;
     }
 
-    //mycrypt (FILE *inFile, unsigned long mask[], int rotateValue);
+    mycrypt (FILE *inFile, unsigned long mask[], int rotateValue);
+
+    fclose(inFile);
 
     return EXIT_SUCCESS;
 } // end of main()
