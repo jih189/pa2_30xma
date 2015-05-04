@@ -55,13 +55,14 @@ int main( int argc, char *argv[] ) {
                           MIN_ROTATE, // Lower bound of rotatevalue
                           MAX_ROTATE  // upper bound of rotatevalue
                           );  
+
         return EXIT_FAILURE;
     }
 
     int errCheck = 0;
     int errNum = 0;
-    char* passphrase = "";
-    unsigned long keys[] = {0,0};
+    char passphrase[PASS_PHRASE_SIZE];
+    unsigned long keys[keys_num];
     long rotateValue = 0;
     FILE* infile = NULL;
 
@@ -69,8 +70,8 @@ int main( int argc, char *argv[] ) {
     // parse passphrase
     errCheck = parsePassPhrase(argv[PASS_PHRASE_INDEX], passphrase);
     if (errCheck == LENGTH_ERR) {
-        fprintf ( stderr, STR_ERR_BAD_PASSPHRASE, argv[1] );
-        errNum += errNum;
+        fprintf ( stderr, STR_ERR_BAD_PASSPHRASE, PASS_PHRASE_SIZE);
+         errNum++;
     }
 
     // ----------------------------------------------------------------------
@@ -81,23 +82,23 @@ int main( int argc, char *argv[] ) {
       snprintf(err_buffer,ERR_BUFFER_SIZE,STR_ERR_CONVERTING,
           argv[KEY_ONE_INDEX],DEF_BASE);
       perror(err_buffer);
-      errNum += errNum;
+      errNum++;
     } else if (errCheck == ENDPTR_ERR) {
       fprintf ( stderr, STR_ERR_NOTINT, argv[KEY_ONE_INDEX]);
-      errNum += errNum;
+      errNum++;
     }
 
     // parseKey 2
-    errCheck = parseKey(argv[KEY_TWO_INDEX], &keys[1]);
+    errCheck = parseKey(argv[KEY_TWO_INDEX], &(keys[1]) );
     if (errCheck == ERANGE_ERR) {
       char err_buffer[ERR_BUFFER_SIZE];
-      snprintf(err_buffer,ERR_BUFFER_SIZE,STR_ERR_CONVERTING,
-          argv[KEY_TWO_INDEX],DEF_BASE);
+      snprintf(err_buffer,ERR_BUFFER_SIZE,
+          STR_ERR_CONVERTING,argv[KEY_TWO_INDEX],DEF_BASE);
       perror(err_buffer);
-      errNum += errNum;
+      errNum++;
     } else if (errCheck == ENDPTR_ERR) {
       fprintf ( stderr, STR_ERR_NOTINT, argv[KEY_TWO_INDEX]);
-      errNum += errNum;
+      errNum++;
     }
 
     // parseRotateValue
@@ -105,29 +106,34 @@ int main( int argc, char *argv[] ) {
     errCheck = parseRotateValue(argv[ROTATE_VALUE_INDEX], &rotateValue);
     if (errCheck == ERANGE_ERR) {
       char err_buffer[ERR_BUFFER_SIZE];
-      snprintf(err_buffer,ERR_BUFFER_SIZE,STR_ERR_CONVERTING,
-          argv[ROTATE_VALUE_INDEX],DEF_BASE);
+      snprintf(err_buffer,ERR_BUFFER_SIZE,
+          STR_ERR_CONVERTING,argv[ROTATE_VALUE_INDEX],DEF_BASE);
       perror(err_buffer);
-      errNum += errNum;
+      errNum++;
     } else if (errCheck == ENDPTR_ERR) {
       fprintf ( stderr, STR_ERR_NOTINT, argv[ROTATE_VALUE_INDEX]);
-      errNum += errNum;
+      errNum++;
     } else if (errCheck == BOUND_ERR) {
       fprintf ( stderr, STR_ERR_BAD_ROT, MIN_ROTATE, MAX_ROTATE );
-      errNum += errNum;
+      errNum++;
     }
 
     // parseInput
     // ----------------------------------------------------------------------
     errCheck = parseInput(argv[FILE_INDEX], &infile);
     if (errCheck == FILE_ERR) { 
-      fprintf ( stderr, STR_ERR_BAD_FILE, infile);
-      errNum += errNum;
+      char err_buffer[ERR_BUFFER_SIZE];
+      snprintf(err_buffer,ERR_BUFFER_SIZE,
+          STR_ERR_BAD_FILE,argv[FILE_INDEX]);
+      perror(err_buffer);
+      errNum++;
     }
 
     // check if any error occured
-    if (errNum)
+    if (errNum) {
     fprintf( stderr, STR_ERR_NUM_ERRORS, errNum);
+    return EXIT_FAILURE;
+    }
 
     //mycrypt (FILE *inFile, unsigned long mask[], int rotateValue);
 
