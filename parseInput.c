@@ -44,7 +44,7 @@
    // FILE ptr
    else {
      // open file with name str , in read mode
-     FILE* tempFile = fopen(str, "r");
+     FILE* tempFile = fopen(str, FILE_OPEN_OPT);
      // file does not opened successfully
      if (!tempFile) {
        return FILE_ERR;
