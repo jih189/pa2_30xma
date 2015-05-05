@@ -1,0 +1,213 @@
+
+# Assignment: PA1
+# Author: Liu Tan
+# Userid: cs30xma
+# Date: May 4, 2015
+
+=========================================================================
+DESCRIPTION
+=========================================================================
+
+The program will be able to read the data to be encrypted either from a file
+specified on the command line or from stdin.
+(data could either be typed in at the keyboard or stdin redirected from a file
+ or via a pipe).
+The encrypted data(binary data) will be written to stdout which can be
+redirected to a file.
+
+5 inputs needed are:
+
+    - passPhrase (a string used to create cypto mask)
+    - key1 (key1 used to create cypto mask)
+    - key2 (key2 used to create cypto mask)
+    - rotVal (the mask rotated according to rotVal)
+    - FILE  (the FIle to be encrypted/decrypted)
+
+=========================================================================
+COMPILATION
+=========================================================================
+(Note: all command will be include in "" ,which means "" is not part of the
+ command )
+
+Compilation is made easy through the use of the Make utility. A file
+included with the source called Makefile specifies how to derive the target
+program.
+
+How to compile
+--------------------
+To compile the program, simply navigate to the directory containing the
+source file for PA0 and do the following in a Linux terminal:
+
+    "make"
+
+How to run
+--------------------
+To run the program after make has finished, type the following:
+
+    "./pa2 [passPhrase] [key1] [key2] [rotVal] [FILE]"
+
+(NOTICE: the output will on text console by default, but since the FILE is
+ encrypted as binary file, it's better to redirect the output to a file and then
+ use binary mode to check the content of the output file.)
+
+
+Validation of inputs
+--------------------
+ [passPhrase]      >= 8 character long
+ [key1      ]      must be numeric; decimal, octal or hexadecimal
+ [key2      ]      must be numeric; decimal, octal or hexadecimal
+ [rotVal    ]      must within range [-63,63], decimal format
+ [FILE      ]      either a name of a file or '-' for stdin
+
+(NOTE: passPhrase will only copy the first 8 characters when the string passed
+ in is greater than 8 )
+
+If any of the arguments is not validated, corresponding error messages will be
+printed out on the standard output stream(text console), but the program won't
+stop until it checked all arguments and print out all error messages if there
+are any. The total number of error occurred will also be printed out.
+
+========================================================================
+SAMPLE OUTPUT
+=========================================================================
+
+An example of [ Valid Input ]
+----------------------------------------
+(The normal output goes to stdout.)
+
+>>> Reading from file and redirecting to output file
+[cs30xma@ieng9]:pa2$ ./pa2 cse30rules 12 123456 7 test1 > test2
+
+>>> Piping to stdin and redirecting to output file
+[cs30xma@ieng9]:pa2$ cat test1 | ./pa2 cse30rules 12 12 4 - > test2
+
+>>> Using hexadecimal values for key1 and octal for key2
+[cs30xma@ieng9]:pa2$ ./pa2 cse30rules 0x5f 054 12 test1 > test2
+
+>>> Using a negative number for rotation value
+[cs30xma@ieng9]:pa2$ ./pa2 cse30rules 0x32 013 -43 test1 > test2
+
+
+Examples of [ Invalid Input ]
+----------------------------------------
+(The abnormal output goes to stderr.)
+
+>>> Wrong number of arguments
+[cs30xma@ieng9]:pa2$ ./pa2 cse30rules 4
+
+Usage: ./pa2 passPhrase key1 key2 rotVal FILE
+    passPhrase (must at least eight characters long)
+    key1 (must be numeric; decimal, octal or hexadecimal)
+    key2 (must be numeric; decimal, octal or hexadecimal)
+    rotVal (must be a decimal value within the range [ -63 - 63])
+    FILE (must be the name of a file or ' -' for stdin)
+
+>>> Miscellaneous mistakes with input
+[cs30xma@ieng9]:pa2$ ./pa2 cse30ru 43a 999999999999 79 sdfaa
+
+    Passphrase must be at least 8 chars long
+
+    "43a" is not an integer
+
+    Converting "999999999999" base "0": Result too large
+
+    Rotation key must be within the range of [ -63 <-> 63]
+
+    sdfaa: No such file or directory
+
+    --- Found 5 errors. ---
+
+
+>>> Using hexadecimal value for rotation value
+[cs30xma@ieng9]:pa2$ ./pa2 cse30rules 0xf 04556 0x4 test1 > test2
+
+     "0x4" is not an integer
+     --- Found 1 errors. ---
+
+
+========================================================================
+Testing
+=========================================================================
+This program was tested using the given pa2test executable.
+I wrote a tester.sh, which will take arguments from the command line
+and pass the same arguments to both pa2 and pa2test and their outputs were
+redirected to two different files:
+
+    pa2     >& test2
+    pa2test >& stdtest2
+
+These outputs were then compared using the command line tool "cmp -l".
+When there were no differences in output, my shell file will just ouput done to
+indicate there are no difference in two files.
+
+=========================================================================
+QUESTIONS
+=========================================================================
+(NOTE: command are included in "", which means "" is not part of command)
+1. Q: What is the command to rename a file?
+
+   A:  "mov [File_name] [File_new_name]"
+
+        e.g. rename a.txt to test.txt
+             "mov a.txt test.txt"
+
+2. Q: What is the command to copy a file?
+
+   A: "cp [source_file] [destination]"
+
+       e.g. copy test from home to current directory
+            "cp ~/test ."
+
+3. Q: What happens when you select text and then middle click in the vim editor
+   when in insert/input mode?
+
+   A: the text you just select will be copied and after the middle clicking, the
+   text that just got copied will be paste.
+
+4. Q: What is a .vimrc file, and how do you create/edit them?
+
+   A: The vimrc file contains optional runtime configuration settings to
+      initialize Vim when it starts.
+
+      To create it, simply "touch .vimrc" in ~/ directory in Unix system.
+
+      to edit it, simply open ".vimrc" and write in some command will customize
+      your vim environment. s.t.
+
+      if you put "syntax on" in your ".vimrc" file, the key word in specific
+      files (such as return in .java file) will have different color than other
+      code.
+
+5. Q: What is the command to cut a full line of text to the clipboard in vim?
+   How do you paste it? 
+
+   A: "dd" -- cut a full line
+      "p"  -- paste the contents in the clipboard in vim
+
+
+6. Q: How do you search for a string in vim?
+   A: in normal mode, type "/" with search pattern, press <cr> to perform the
+      search, then press "n" to search forward, "N" to search backwords
+
+7. Q: How do you turn on line numbers in vim?
+   A: in normal mode, type "set nu"
+
+8. Q: How can you quickly (with a single Linux command) change directory to a
+   directory named fubar that is in your home (login) directory? You cannot
+   change directory to your home directory first and then change directory to
+   fubar. That would take two commands. State how you would do this with a
+   single command no matter where your current working directory might be.
+
+   A: "cd ~/fubar"
+
+9. Q: How do you change the permissions on a file? Let's say want to give read
+   permission to the group? Specify the command to do this.
+
+   A: "chmod g+r [filename]" will give read permission to the group on this
+      specific file.
+
+
+      e.g. if you want to give read the permission on file a.txt for the group,
+
+           "chmod g+r a.txt"
+
