@@ -52,8 +52,7 @@ testparseKey()
     testInt = 0; 
     returnValue = parseKey(testString, &testInt );
 
-    TEST( returnValue == ENDPTR_ERR);
-//     printf("return value is %d, testInt is %d",returnValue, testInt);
+    TEST( returnValue == EXIT_SUCCESS && testInt == 0);
 
 
 //  Test normal case.
@@ -83,6 +82,25 @@ testparseKey()
 
     TEST( returnValue == EXIT_SUCCESS && testInt == 25 );
 
+//  Test hex case.
+//  --------------------------------------------------
+    testString = "0x25";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+//    printf("the hex value of ox25 is 0x%.8x, the decimal value of it is %d\n",testInt, testInt );
+
+    TEST( returnValue == EXIT_SUCCESS && testInt == 37 );
+
+//  Test oct case.
+//  --------------------------------------------------
+    testString = "015";
+    testInt = 0; 
+    returnValue = parseKey(testString, &testInt );
+
+//    printf("the oct value of 015 is %o, the decimal value of it is %d\n",testInt, testInt );
+
+    TEST( returnValue == EXIT_SUCCESS && testInt == 13 );
 
 //  Finish test
 //  --------------------------------------------------
