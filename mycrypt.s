@@ -3,18 +3,18 @@
  * Filename:    mycrypt.s
  * Author:      Liu Tan
  * Userid:      cs30xma
- * Description: SPARC assembly routine to to rotate a 64-bit mask by rotateCnt
- *              places.
- *              called from mycrypt.s
- * Date:        4/27/2015
+ * Description: SPARC assembly routine to encrypt/decrypt file
+ * Date:        5/4/2015
  * Sources of Help: None
  */
 
 	.global mycrypt
 	.section ".text"
+
 BUFSIZE=1024
 CHUNKSIZE=8
 LONG_OFFSET=4
+
 /*
  * Function name: mycrypt
  * Function prototype:
@@ -22,19 +22,19 @@ LONG_OFFSET=4
  * Description:
  * 	This function encrypt a file using given mask.
  * Parameters:
- *      arg1: inFile -- the File * point to a file need to be read
+ *      arg1: inFile -- the File* point to a file need to be read
  *      arg2: mask   -- the mask used to encrypt
  *      arg3: rotateValue -- rotateValue after each 8 byte encrypt
  * Side Effects: none
  * Error Conditions: none
  * Return Value: none
  * Registers Used:
- *      %i0 - arg1 -- inFile 
- *      %i1 - arg2 -- mask   
- *      %i2 - arg3 -- rotateValue
- *      %l0 -- save local pointer position, keep decreasing
- *      %l1 -- save how many characters have read in BUFFER[1024]
- *      %l2 -- updated remained byte to modify, keep decreasing
+ *    %i0 - arg1 -- inFile 
+ *    %i1 - arg2 -- mask   
+ *    %i2 - arg3 -- rotateValue
+ *    %l0 - hold starting pos of data needed to encrypt,keep decreasing
+ *    %l1 - save how many characters have read in BUFFER[1024]
+ *    %l2 - updated remained byte to modify, keep decreasing
  */
 
 mycrypt:
@@ -69,7 +69,7 @@ chunck_rotate_body:
 	ld [%l0], %l3                 ! %l3 = first 4 byte
 	ld [%i1], %l4                 ! %l4 =  mask[0]
 	xor %l3, %l4, %l4             ! first 4 byte ^ mask[0]
-	st  %l5, [%l0]                ! store first 4 byte back to buffer ptr
+	st  %l4, [%l0]                ! store first 4 byte back to buffer ptr
 	                              ! %l0 points to chunck starting address
 
 	ld [%l0+LONG_OFFSET], %l3     ! %l3 = second 4 byte
@@ -124,7 +124,8 @@ end_byte_rotate:
 
         ! read another BUFSIZE(1024) byte
 
-	add %fp, -BUFSIZE, %o0        ! pass local buffer ptr
+	add %fp, -BUFSIZE, %l0        ! pass local buffer ptr
+	mov %l0, %o0                  ! move local buffer ptr as arg 1 of fread
 	                              ! 1 already in %o1
 	mov BUFSIZE, %o2              ! read BUFSIZE(1024) byte total
 	mov %i0, %o3                  ! pass FILE* inFile to fread as arg3
@@ -132,7 +133,7 @@ end_byte_rotate:
 	nop
 
 	cmp %o0, 0                    ! check if data read successfully
-	bl outer_loop_body
+	bg outer_loop_body
 	nop
 
 end_outer_loop:
