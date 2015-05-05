@@ -20,9 +20,8 @@ isort:
 	bge,a	endarray       ! #2 nop
 	add	%i1, -1, %l0   ! #2 nop, 1st line after endarray
 
+	mov	%l0, %l1       ! #6 nop, 1st line after startarry
 startarray:
-
-	mov	%l0, %l1
 
 	cmp	%l1, %g0
 	ble,a	endinner       ! #3 nop
@@ -57,8 +56,8 @@ startinner:
 endinner:
 
 	cmp	%l0, %i1
-	bl	startarray
-	nop
+	bl,a	startarray     ! #6 nop
+	mov	%l0, %l1       ! #6 nop, 1st line after startarry
 
 	add	%i1, -1, %l0   ! #2 nop, 1st line after endarray
 
