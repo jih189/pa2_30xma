@@ -3,6 +3,9 @@
  * CSE 30 PA2 - mycrypt.
  *
  * Performs an insertion sort.
+ * name: Liu Tan
+ * id: cs30xma
+ * date: May 4, 2015
  */
 
 	.section	".text"
@@ -27,10 +30,9 @@ startarray:
 
 startinner:
 
-	mov	%l1, %o0
 	mov	4, %o1
 	call	.mul
-	nop
+	mov	%l1, %o0    ! first nop, mov replace nop
 
 	mov	%o0, %l2
 	add	%i0, %l2, %l2
@@ -63,9 +65,9 @@ endarray:
 	add	%i1, -1, %l0
 	sll	%l0, 2, %l0
 	add	%i0, %l0, %l0
-	ld	[%l0], %l0
+	ld	[%l0], %l0    !%l0 = max
 
-	ld	[%i0], %i0
+	ld	[%i0], %i0    !%i0 = min
 	sub	%l0, %i0, %i0
 
 	ret
