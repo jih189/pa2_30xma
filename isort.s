@@ -25,8 +25,8 @@ startarray:
 	mov	%l0, %l1
 
 	cmp	%l1, %g0
-	ble	endinner
-	nop
+	ble,a	endinner       ! #3 nop
+	add	%l0, 1, %l0    ! #3 nop, 1st line after endinner
 
 startinner:
 
@@ -40,8 +40,8 @@ startinner:
 	ld	[%l2 - 4], %l4
 
 	cmp	%l3, %l4
-	bge	endinner
-	nop
+	bge,a	endinner
+	add	%l0, 1, %l0    ! #3 nop, 1st line after endinner
 
 	st	%l4, [%l2]
 	st	%l3, [%l2 - 4]
@@ -52,9 +52,9 @@ startinner:
 	bg	startinner
 	nop
 
-endinner:
+	add	%l0, 1, %l0    ! #3 nop, 1st line after endinner
 
-	add	%l0, 1, %l0
+endinner:
 
 	cmp	%l0, %i1
 	bl	startarray
