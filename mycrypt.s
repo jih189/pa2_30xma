@@ -37,14 +37,12 @@ LONG_OFFSET=4
  *      %l2 -- updated remained byte to modify, keep decreasing
  */
 
- // void mycrypt( FILE *inFile, unsigned long mask[], int rotateValue );
-// fread(char*, 1, bufsize, infile)
 mycrypt:
 	save %sp, -(92 + BUFSIZE) & -8,  %sp ! Save caller's window;
 
 	! first time read BUFSIZE(1024) byte
 
-	add %fp-BUFSIZE, %l0          ! %l0 save the local ptr inicial location
+	add %fp,-BUFSIZE, %l0         ! %l0 save the local ptr inicial location
 	mov %l0, %o0                  ! move local buffer ptr as arg 1 of fread
 	mov 1, %o1                    ! read 1 byte each time for fread
 	mov BUFSIZE, %o2              ! read BUFSIZE(1024) byte total
@@ -71,11 +69,11 @@ chunck_rotate_body:
 	ld [%l0], %l3                 ! %l3 = first 4 byte
 	ld [%i1], %l4                 ! %l4 =  mask[0]
 	xor %l3, %l4, %l4             ! first 4 byte ^ mask[0]
-	st  %l5, %l0                  ! store first 4 byte back to buffer ptr
+	st  %l5, [%l0]                ! store first 4 byte back to buffer ptr
 	                              ! %l0 points to chunck starting address
 
-	ld [%l0+OFFSET], %l3          ! %l3 = second 4 byte
-	ld [%i1+OFFSET], %l4          ! %l4 = mask[1]
+	ld [%l0+LONG_OFFSET], %l3     ! %l3 = second 4 byte
+	ld [%i1+LONG_OFFSET], %l4     ! %l4 = mask[1]
 	xor %l3, %l4, %l4             ! second 4 byte ^ mask[1]
 	st %l4, [%l0+LONG_OFFSET]     ! store second 4 byte back 
 
@@ -95,11 +93,11 @@ end_chunck_rotate:
 byte_rotate_loop:
 	clr %l3                      ! local counter for byte read
 	cmp %l2, 0                   ! remianed byte > 0?
-	beq  end_byte_rotate
+	be  end_byte_rotate
 	nop
 
 byte_rotate_body:
-	ldub [%lo + l3] , %l3        ! get remained first byte
+	ldub [%l0 + %l3], %l3        ! get remained first byte
 	ldub [%i1 + %l3], %l4        ! get mask first byte
 	xor   %l3, %l4, %l4
 	stb  %l4, [%l0+%l3]          ! store back updated byte value
@@ -117,7 +115,7 @@ end_byte_rotate:
 
 	! write first 1024 byte to stdout
 
-	add %fp-BUFSIZE, %o0          ! pass local buffer ptr 
+	add %fp, -BUFSIZE, %o0        ! pass local buffer ptr 
 	mov 1, %o1                    ! write 1 byte at a time
 	mov %l1, %o2                  ! write the same amount of byte as read 
 	mov %l3, %o3                  ! stdout to arg 4
@@ -126,7 +124,7 @@ end_byte_rotate:
 
         ! read another BUFSIZE(1024) byte
 
-	add %fp-BUFSIZE, %o0          ! pass local buffer ptr
+	add %fp, -BUFSIZE, %o0        ! pass local buffer ptr
 	                              ! 1 already in %o1
 	mov BUFSIZE, %o2              ! read BUFSIZE(1024) byte total
 	mov %i0, %o3                  ! pass FILE* inFile to fread as arg3
