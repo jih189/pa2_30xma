@@ -27,10 +27,10 @@ startarray:
 	cmp	%l1, %g0
 	ble,a	endinner       ! #3 nop
 	add	%l0, 1, %l0    ! #3 nop, 1st line after endinner
+	mov	4, %o1         ! #5 nop, 1st line in startinner body
 
 startinner:
 
-	mov	4, %o1
 	call	.mul
 	mov	%l1, %o0    ! first nop, mov replace nop
 
@@ -41,7 +41,7 @@ startinner:
 
 	cmp	%l3, %l4
 	bge,a	endinner
-	add	%l0, 1, %l0    ! #3 nop, 1st line after endinner
+	add	%l0, 1, %l0    ! #4 nop, 1st line after endinner
 
 	st	%l4, [%l2]
 	st	%l3, [%l2 - 4]
@@ -49,8 +49,8 @@ startinner:
 	add	%l1, -1, %l1
 
 	cmp	%l1, %g0
-	bg	startinner
-	nop
+	bg,a	startinner     ! #5 nop
+	mov	4, %o1         ! #5 nop, the 1st line in startinner body
 
 	add	%l0, 1, %l0    ! #3 nop, 1st line after endinner
 
