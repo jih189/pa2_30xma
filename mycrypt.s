@@ -42,7 +42,7 @@ mycrypt:
 
         ! first time read BUFSIZE(1024) byte
 
-	add %fp,-BUFSIZE, %l0         ! %l0 save the local ptr inicial location
+	add %fp,-BUFSIZE, %l0         ! %l0 save the local ptr initial location
 	mov %l0, %o0                  ! move local buffer ptr as arg 1 of fread
 	mov 1, %o1                    ! read 1 byte each time for fread
 	mov BUFSIZE, %o2              ! read BUFSIZE(1024) byte total
@@ -52,7 +52,7 @@ mycrypt:
 
 outer_loop:
 	cmp %o0, 0                    ! check if read data successfully
-	be end_outer_loop             ! fread not read anydata, return
+	be end_outer_loop             ! fread not read any data, return
 	nop
 
 outer_loop_body:
@@ -84,7 +84,7 @@ chunck_rotate_body:
 	
 	add  %l0, CHUNKSIZE, %l0      ! update chunck start pos, 
 	sub  %l2, CHUNKSIZE, %l2      ! update byte remained value
-	cmp  %l2, CHUNKSIZE           ! remianed byte > CHUNKSIZE(8)?
+	cmp  %l2, CHUNKSIZE           ! Remained byte > CHUNKSIZE(8)?
 	bge  chunck_rotate_body
 	nop
 
@@ -92,7 +92,7 @@ end_chunck_rotate:
 
 byte_rotate_loop:
 	clr %l3                      ! local counter for byte read
-	cmp %l2, 0                   ! remianed byte > 0?
+	cmp %l2, 0                   ! Remained byte > 0?
 	be  end_byte_rotate
 	nop
 
@@ -103,7 +103,7 @@ byte_rotate_body:
 	stb  %l5, [%l0+%l3]          ! store back updated byte value
 
 	inc %l3                      ! update byte read counter
-	dec %l2                      ! update byte remianed value
+	dec %l2                      ! update byte remained value
 	cmp %l2, 0                   ! remained byte > 0?
 	bg  byte_rotate_body
 	nop
