@@ -17,8 +17,8 @@ isort:
 	mov	1, %l0
 
 	cmp	%l0, %i1
-	bge	endarray
-	nop
+	bge,a	endarray       ! #2 nop
+	add	%i1, -1, %l0   ! #2 nop, 1st line after endarray
 
 startarray:
 
@@ -60,9 +60,10 @@ endinner:
 	bl	startarray
 	nop
 
+	add	%i1, -1, %l0   ! #2 nop, 1st line after endarray
+
 endarray:
 
-	add	%i1, -1, %l0
 	sll	%l0, 2, %l0
 	add	%i0, %l0, %l0
 	ld	[%l0], %l0    !%l0 = max
