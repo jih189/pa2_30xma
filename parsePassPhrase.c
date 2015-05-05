@@ -1,9 +1,9 @@
 
 /*
- * Filename:    parseRotateValue.s
+ * Filename:    parsePassPhrase.c
  * Author:      Liu Tan
  * Userid:      cs30xma
- * Description: C routine to convert a string to a unsigned long.
+ * Description: C routine to convert a string to a string.
  * Date:        5/1/2015
  * Sources of Help: none 
  */
@@ -33,14 +33,10 @@
  *        EXIT_SUCCESS(0) -- if the string is parsed successfully.
  *        LENGTH_ERR(5)   -- string is too short
  */
-// template <class T>
-// int arrayLen(T& a) { return sizeof(a) / sizeof(a[0]); }
 
 int parsePassPhrase( char *str, char *passphrase ) {
 
-//   int size = sizeof(str)/sizeof(str[0]);
   int size = strlen(str);
-
 
   if (size < PASS_PHRASE_SIZE) return LENGTH_ERR;
 
