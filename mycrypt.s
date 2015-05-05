@@ -61,7 +61,7 @@ chunck_rotate_loop:
 	mov %o0, %l1                  ! %l1 = actual byte read each time 
 	mov %l1, %l2                  ! %l2 = cp %l1, keep decreasing 
 
-	cmp %l2, CHUNKSIZE            ! byte read > 8?
+	cmp %l2, CHUNKSIZE            ! byte read >= 8?
 	bl  end_chunck_rotate         ! read < 8, modify byte by byte
 	nop
 
@@ -77,7 +77,7 @@ chunck_rotate_body:
 	xor %l3, %l4, %l4             ! second 4 byte ^ mask[1]
 	st %l4, [%l0+LONG_OFFSET]     ! store second 4 byte back 
 
-	mov %l0, %o0                  ! arg1 = mask to be rotate
+	mov %i1, %o0                  ! arg1 = mask to be rotate
 	mov %i2, %o1                  ! arg2 = rotateValue 
 	call rotate
 	nop
@@ -97,14 +97,14 @@ byte_rotate_loop:
 	nop
 
 byte_rotate_body:
-	ldub [%l0 + %l3], %l3        ! get remained first byte
-	ldub [%i1 + %l3], %l4        ! get mask first byte
-	xor   %l3, %l4, %l4
-	stb  %l4, [%l0+%l3]          ! store back updated byte value
+	ldub [%l0 + %l3], %l4        ! get remained first byte
+	ldub [%i1 + %l3], %l5        ! get mask first byte
+	xor   %l4, %l5, %l5
+	stb  %l5, [%l0+%l3]          ! store back updated byte value
 
 	inc %l3                      ! update byte read counter
 	dec %l2                      ! update byte remianed value
-	cmp %l1, 0                   ! remained byte > 0?
+	cmp %l2, 0                   ! remained byte > 0?
 	bg  byte_rotate_body
 	nop
 
