@@ -40,7 +40,7 @@ LONG_OFFSET=4
 mycrypt:
 	save %sp, -(92 + BUFSIZE) & -8,  %sp ! Save caller's window;
 
-	! first time read BUFSIZE(1024) byte
+        ! first time read BUFSIZE(1024) byte
 
 	add %fp,-BUFSIZE, %l0         ! %l0 save the local ptr inicial location
 	mov %l0, %o0                  ! move local buffer ptr as arg 1 of fread
@@ -113,7 +113,7 @@ end_byte_rotate:
 	set standardOut, %l3          ! %l3 = &standardOut
 	ld [%l3], %l3                 ! get global var standardOut
 
-	! write first 1024 byte to stdout
+        ! write first 1024 byte to stdout
 
 	add %fp, -BUFSIZE, %o0        ! pass local buffer ptr 
 	mov 1, %o1                    ! write 1 byte at a time
