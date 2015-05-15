@@ -40,7 +40,7 @@ int parsePassPhrase( char *str, char *passphrase ) {
 
   if (size < PASS_PHRASE_SIZE) return LENGTH_ERR;
 
-  strncpy(passphrase, str, PASS_PHRASE_SIZE);
+  (void)strncpy(passphrase, str, PASS_PHRASE_SIZE);
 
   passphrase[PASS_PHRASE_SIZE] = '\0';
 
