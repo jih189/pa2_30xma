@@ -146,10 +146,10 @@ QUESTIONS
 (NOTE: command are included in "", which means "" is not part of command)
 1. Q: What is the command to rename a file?
 
-   A:  "mov [File_name] [File_new_name]"
+   A:  "mv [File_name] [File_new_name]"
 
         e.g. rename a.txt to test.txt
-             "mov a.txt test.txt"
+             "mv a.txt test.txt"
 
 2. Q: What is the command to copy a file?
 
